@@ -28,11 +28,7 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
 
-    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public List<UsuarioBasicoDTO> listarUsuarios() {
         return this.converter.converterListObjects(this.usuarioRepository.findAll(), UsuarioBasicoDTO.class);
