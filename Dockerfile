@@ -5,5 +5,8 @@ RUN mvn clean package -X -DskipTests
 
 FROM openjdk:17-ea-10-jdk-slim
 WORKDIR /app
+
+EXPOSE 8080
+
 COPY --from=build ./app/target/*.jar ./springdeskcurso.jar
 ENTRYPOINT java -jar springdeskcurso.jar

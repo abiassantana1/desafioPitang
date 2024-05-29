@@ -48,5 +48,6 @@ public class UsuarioDTO {
     @NotNull(message = "Invalid fields")
     private String phone;
 
+    @NotNull(message = "Invalid fields")
     private List<CarroDTO> cars;
 }

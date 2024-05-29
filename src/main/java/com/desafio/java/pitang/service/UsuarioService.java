@@ -2,6 +2,7 @@ package com.desafio.java.pitang.service;
 
 import com.desafio.java.pitang.exception.BusinessException;
 import com.desafio.java.pitang.exception.MultipleBusinessException;
+import com.desafio.java.pitang.exception.SourceNotFoundException;
 import com.desafio.java.pitang.model.dto.UsuarioBasicoDTO;
 import com.desafio.java.pitang.model.dto.UsuarioDTO;
 import com.desafio.java.pitang.model.entity.Carro;
@@ -10,6 +11,7 @@ import com.desafio.java.pitang.model.mapper.ConverterDTO;
 import com.desafio.java.pitang.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -55,7 +57,7 @@ public class UsuarioService {
             usuario.setPassword(new BCryptPasswordEncoder().encode(usuario.getPassword()));
             return (UsuarioDTO) this.converter.convertObject(this.usuarioRepository.save(usuario) , UsuarioDTO.class);
         } else {
-            throw new RuntimeException("Id de usuário não encontrado");
+            throw new SourceNotFoundException("");
         }
     }
 
@@ -81,7 +83,7 @@ public class UsuarioService {
         if(usuarioRepository.existsById(id)) {
             this.usuarioRepository.deleteById(id);
         } else {
-            throw new RuntimeException("Id de usuário não encontrado");
+            throw new SourceNotFoundException("");
         }
     }
 

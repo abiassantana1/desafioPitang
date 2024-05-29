@@ -1,6 +1,7 @@
 package com.desafio.java.pitang.exception;
 
 import com.desafio.java.pitang.model.dto.ErrorMessageDTO;
+import org.modelmapper.MappingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -63,4 +64,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorMessage, HttpStatus.FORBIDDEN);
     }
 
+
+    @ExceptionHandler(MappingException.class)
+    public ResponseEntity<Object> handleMappingException(MappingException ex) {
+        ErrorMessageDTO errorMessage = new ErrorMessageDTO("Invalid fields", HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    }
 }
