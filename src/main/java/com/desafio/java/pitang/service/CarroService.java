@@ -7,6 +7,7 @@ import com.desafio.java.pitang.model.entity.Carro;
 import com.desafio.java.pitang.model.entity.Usuario;
 import com.desafio.java.pitang.model.mapper.ConverterDTO;
 import com.desafio.java.pitang.repository.CarroRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,7 @@ public class CarroService {
         return (CarroDTO) this.converter.convertObject(carro, CarroDTO.class);
     }
 
+    @Transactional
     public CarroDTO cadastrarCarros(CarroDTO carroDTO, Usuario usuario) {
         this.validarCarro(carroDTO);
         Carro carro = (Carro) this.converter.convertObject(carroDTO, Carro.class);
@@ -44,22 +46,30 @@ public class CarroService {
         }
     }
 
+    @Transactional
     public List<Carro> cadastrarListaCarros(List<CarroDTO> carrosListDTO) {
         carrosListDTO.forEach(this::validarCarro);
         return this.carroRepository.saveAll(this.converter.converterListObjects(carrosListDTO, Carro.class));
     }
 
+    @Transactional
     public CarroDTO editarCarros(CarroDTO carroDTO, Long id, Usuario usuario) {
-        this.validarCarro(carroDTO);
         if(carroRepository.existsByIdAndUsuarioId(id, usuario.getId())) {
+            Carro carroAntigo = carroRepository.findByIdAndUsuarioId(id, usuario.getId())
+                    .orElseThrow(() -> new SourceNotFoundException(""));
+            if(!carroAntigo.getLicensePlate().equals(carroDTO.getLicensePlate())) {
+                this.validarCarro(carroDTO);
+            }
             Carro carro = (Carro) this.converter.convertObject(carroDTO, Carro.class);
             carro.setId(id);
+            carro.setUsuario(usuario);
             return (CarroDTO) this.converter.convertObject(this.carroRepository.save(carro) , CarroDTO.class);
         } else {
             throw new SourceNotFoundException("");
         }
     }
 
+    @Transactional
     public void removerCarro(Long id, Usuario usuario) {
         if(carroRepository.existsByIdAndUsuarioId(id, usuario.getId())) {
             this.carroRepository.deleteById(id);
